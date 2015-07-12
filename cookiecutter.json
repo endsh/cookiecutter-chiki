@@ -1,0 +1,17 @@
+{
+    "author": "linshao",
+    "email": "438985635@qq.com",
+    "name": "simple",
+    "project_name": "Simple",
+    "project_short_description": "Simple web project based on chiki.",
+    "version": "0.1.0",
+    "log_email_user": "pms@haoku.net",
+    "log_email_password": "",
+    "admin_host": "admin.simple.com",
+    "api_host": "api.simple.com",
+    "web_host": "www.simple.com",
+    "port": 5000,
+    "_copy_without_render": [
+        "*.html"
+    ]
+}
