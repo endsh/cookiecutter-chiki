@@ -24,7 +24,7 @@ def api(debug=False, reloader=False, host='127.0.0.1', port=APIConfig.PORT):
 @manager.command
 def web(debug=False, reloader=False, host='127.0.0.1', port=WebConfig.PORT):
     """ Run the web server. """
-    app = create_api()
+    app = create_web()
     app.run(debug=debug, use_reloader=reloader, host=host, port=port)
 
 

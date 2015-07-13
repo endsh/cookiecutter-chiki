@@ -24,6 +24,6 @@ def create_api(pyfile=None):
 
 
 def create_web(pyfile=None):
-    return init_web(web.init, APIConfig, pyfile=pyfile,
-        template_folder=APIConfig.TEMPLATE_FOLDER)
+    return init_web(web.init, WebConfig, pyfile=pyfile,
+        template_folder=WebConfig.TEMPLATE_FOLDER)
 {%- endif %}
