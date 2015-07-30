@@ -3,7 +3,7 @@ from fabric.api import cd, env, local, run, sudo
 from fabric.api import execute, hosts, lcd, put
 from fabric.contrib.files import exists, append
 
-env.user = 'simple@chiki.org'
+env.user = '{{ cookiecutter.name }}@chiki.org'
 env.password = ''
 ROOT = 'root@chiki.org'
 PROJECT_NAME = '{{ cookiecutter.name }}'
@@ -20,7 +20,7 @@ def all():
 @hosts(ROOT)
 def init():
     build()
-    user('congra')
+    user('{{ cookiecutter.name }}')
 
 
 def build():
@@ -28,10 +28,11 @@ def build():
     sudo('apt-get install -y vim software-properties-common')
     sudo('apt-get install -y python-setuptools')
     sudo('easy_install pip supervisor')
-    sudo('apt-get install -y python-virtualenv virtualenvwrapper')
+    sudo('apt-get install -y python-virtualenv')
     sudo('apt-get install -y python-dev subversion curl')
     sudo('apt-get install -y libmysqlclient-dev git gcc g++ unzip')
     sudo('apt-get install -y nginx mongodb')
+    sudo('pip install virtualenvwrapper')
 
 
 def user(name):
@@ -68,7 +69,7 @@ def clone2setup(name, git):
     else:
         run('cd %s && git stash && git pull' % name)
     with cd(name):
-        run('~/.virtualenvs/%s/bin/python setup.py install' % name)
+        run('~/.virtualenvs/%s/bin/python setup.py install' % PROJECT_NAME)
 
 
 def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
@@ -136,7 +137,7 @@ def nginx():
 
 
 def nginx_config():
-    put('nginx/congra.nginx.conf', '/etc/nginx/sites-enabled')
+    put('nginx/{{ cookiecutter.name }}.nginx.conf', '/etc/nginx/sites-enabled')
 
 
 def nginx_reload():
@@ -172,5 +173,5 @@ def uwsgi_reload():
     run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- endif %}
     {%- if cookiecutter.has_web %}
-    run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/web.pid' % SOURCE_FOLDER)
+    run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- endif %}

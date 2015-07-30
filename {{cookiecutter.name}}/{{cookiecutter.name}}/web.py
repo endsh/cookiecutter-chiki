@@ -23,7 +23,6 @@ def init_routes(app):
 
 
 def init(app):
-    api.init_app(app)
     db.init_app(app)
     media.init_app(app)
     login.init_app(app)
