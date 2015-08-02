@@ -13,7 +13,7 @@ manager.add_command('admin', Server(port=AdminConfig.PORT))
 
 {%- if cookiecutter.has_api %}
 @manager.command
-def api(debug=False, reloader=False, host='127.0.0.1', port=APIConfig.PORT):
+def api(debug=False, reloader=False, host='0.0.0.0', port=APIConfig.PORT):
     """ Run the api server. """
     app = create_api()
     app.run(debug=debug, use_reloader=reloader, host=host, port=port)
@@ -22,7 +22,7 @@ def api(debug=False, reloader=False, host='127.0.0.1', port=APIConfig.PORT):
 {% endif %}
 {%- if cookiecutter.has_web %}
 @manager.command
-def web(debug=False, reloader=False, host='127.0.0.1', port=WebConfig.PORT):
+def web(debug=False, reloader=False, host='0.0.0.0', port=WebConfig.PORT):
     """ Run the web server. """
     app = create_web()
     app.run(debug=debug, use_reloader=reloader, host=host, port=port)
