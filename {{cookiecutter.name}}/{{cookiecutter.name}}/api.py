@@ -1,5 +1,6 @@
 # coding: utf-8
 from chiki import MediaManager, init_uploads
+from mongoengine.errors import DoesNotExist
 from .base import api, page, db, login
 
 media = MediaManager(

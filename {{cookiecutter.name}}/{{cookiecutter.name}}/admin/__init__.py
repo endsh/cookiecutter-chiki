@@ -1,6 +1,7 @@
 # coding: utf-8
 from chiki import init_uploads
 from chiki.admin import ModelView
+from mongoengine.errors import DoesNotExist
 from ..base import admin, db, login
 
 sync_models = []

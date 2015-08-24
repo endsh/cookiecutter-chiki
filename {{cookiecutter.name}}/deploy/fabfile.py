@@ -122,7 +122,7 @@ def commit():
 
 @hosts(env.user)
 def pip():
-    run('pip install -r %s/deploy_requirements.txt' % SOURCE_FOLDER)
+    run('pip install -r %s/requirements.txt' % SOURCE_FOLDER)
 
 
 def spip():
@@ -175,3 +175,9 @@ def uwsgi_reload():
     {%- if cookiecutter.has_web %}
     run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- endif %}
+
+
+def setup_ssh():
+    local('cp files/id_rsa ~/.ssh/id_%s' % PROJECT_NAME)
+    local('cp files/id_rsa.pub ~/.ssh/id_%s.pub' % PROJECT_NAME)
+    local('chmod -R 0600 ~/.ssh/id_%s*' % PROJECT_NAME)
