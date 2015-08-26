@@ -91,7 +91,7 @@ def mkextends():
 
 
 def mkenv(source_folder=SOURCE_FOLDER):
-    put('files/.bash_profile', '~/.bash_profile')
+    put('files/bash_profile', '~/.bash_profile')
     append('~/.bashrc' , 'source ~/.bash_profile')
     for dirname in ['etc', 'run', 'logs']:
         run('mkdir -p %s/%s' % (source_folder, dirname))
