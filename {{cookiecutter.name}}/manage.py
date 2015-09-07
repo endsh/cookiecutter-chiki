@@ -11,7 +11,7 @@ manager = Manager(create_admin)
 manager.add_command('admin', Server(port=AdminConfig.PORT))
 
 
-{%- if cookiecutter.has_api %}
+{% if cookiecutter.has_api -%}
 @manager.command
 def api(debug=False, reloader=False, host='0.0.0.0', port=APIConfig.PORT):
     """ Run the api server. """
@@ -20,7 +20,7 @@ def api(debug=False, reloader=False, host='0.0.0.0', port=APIConfig.PORT):
 
 
 {% endif %}
-{%- if cookiecutter.has_web %}
+{% if cookiecutter.has_web -%}
 @manager.command
 def web(debug=False, reloader=False, host='0.0.0.0', port=WebConfig.PORT):
     """ Run the web server. """

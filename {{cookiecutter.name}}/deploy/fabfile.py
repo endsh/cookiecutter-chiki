@@ -114,6 +114,11 @@ def sync():
     execute(update)
 
 
+def up():
+    sync()
+    execute(restart)
+
+
 def commit():   
     local('git add --all ..')
     local('git commit -m "auto commit"')
@@ -145,7 +150,7 @@ def nginx_reload():
 
 
 @hosts(env.user)
-def uwsgi_start():
+def start():
     run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-admin.ini' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- if cookiecutter.has_api %}
     run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-api.ini' % (PROJECT_NAME, SOURCE_FOLDER))
@@ -156,7 +161,7 @@ def uwsgi_start():
 
 
 @hosts(env.user)
-def uwsgi_stop():
+def stop():
     run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- if cookiecutter.has_api %}
     run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
@@ -167,7 +172,29 @@ def uwsgi_stop():
 
 
 @hosts(env.user)
-def uwsgi_reload():
+def restart():
+    try:    
+        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
+        {%- if cookiecutter.has_api %}
+        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
+        {%- endif %}
+        {%- if cookiecutter.has_web %}
+        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
+        {%- endif %}
+    except:
+        pass
+
+    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-admin.ini' % (PROJECT_NAME, SOURCE_FOLDER))
+    {%- if cookiecutter.has_api %}
+    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-api.ini' % (PROJECT_NAME, SOURCE_FOLDER))
+    {%- endif %}
+    {%- if cookiecutter.has_web %}
+    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-web.ini' % (PROJECT_NAME, SOURCE_FOLDER))
+    {%- endif %}
+
+
+@hosts(env.user)
+def reload():
     run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
     {%- if cookiecutter.has_api %}
     run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
