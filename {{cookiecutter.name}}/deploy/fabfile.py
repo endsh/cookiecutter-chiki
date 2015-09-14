@@ -1,6 +1,10 @@
 # coding: utf-8
+import sys
+sys.path.append("..")
+import {{ cookiecutter.name }}
+
 from fabric.api import cd, env, local, run, sudo
-from fabric.api import execute, hosts, lcd, put
+from fabric.api import execute, hosts, lcd, put, settings
 from fabric.contrib.files import exists, append
 
 env.user = '{{ cookiecutter.name }}@chiki.org'
@@ -9,6 +13,10 @@ ROOT = 'root@chiki.org'
 PROJECT_NAME = '{{ cookiecutter.name }}'
 SOURCE_FOLDER = '/home/%s/%s' % ('{{ cookiecutter.name }}', PROJECT_NAME)
 REPO_URL = 'git@gitlab.com:tinysh/{{ cookiecutter.name }}.git'
+
+
+class FabricException(Exception):
+    pass
 
 
 def all():
@@ -98,30 +106,33 @@ def mkenv(source_folder=SOURCE_FOLDER):
 
     etc = '%s/%s' % (source_folder, 'etc')
     put('etc/admin.cfg', etc)
-    put('etc/uwsgi-admin.ini', etc)
+    put('etc/uwsgi.admin.ini', etc)
+    put('etc/uwsgi.admin.back.ini', etc)
     {%- if cookiecutter.has_api %}
     put('etc/api.cfg', etc)
-    put('etc/uwsgi-api.ini', etc)
+    put('etc/uwsgi.api.ini', etc)
+    put('etc/uwsgi.api.back.ini', etc)
     {%- endif %}
     {%- if cookiecutter.has_web %}
     put('etc/web.cfg', etc)
-    put('etc/uwsgi-web.ini', etc)
+    put('etc/uwsgi.web.ini', etc)
+    put('etc/uwsgi.web.back.ini', etc)
     {%- endif %}
 
 
-def sync():
-    commit()
-    execute(update)
-
-
-def up():
-    sync()
+def up(msg='auto commit'):
+    sync(msg)
     execute(restart)
 
 
-def commit():   
+def sync(msg='auto commit'):
+    commit(msg)
+    execute(update)
+
+
+def commit(msg='auto commit'):   
     local('git add --all ..')
-    local('git commit -m "auto commit"')
+    local('git commit -m "%s"' % msg)
     local('git push -u origin master')
 
 
@@ -149,59 +160,66 @@ def nginx_reload():
     run('service nginx reload')
 
 
+def _start(*args):
+    for arg in args:
+        run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi.%s.ini' % (
+            PROJECT_NAME, SOURCE_FOLDER, arg))
+
+
+def _start_back(*args):
+    for arg in args:
+        run('CHIKI_BACK=true ~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi.%s.ini' % (
+            PROJECT_NAME, SOURCE_FOLDER, arg))
+
+
+def _stop(*args):
+    for arg in args:
+        with settings(abort_exception=FabricException):
+            try:
+                run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/%s.pid' % (
+                        PROJECT_NAME, SOURCE_FOLDER, arg))
+            except FabricException, e:
+                print str(e)
+
+
 @hosts(env.user)
 def start():
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-admin.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- if cookiecutter.has_api %}
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-api.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
-    {%- if cookiecutter.has_web %}
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-web.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
+    _start('admin'
+        {%- if cookiecutter.has_api %}, 'api'{% endif %}
+        {%- if cookiecutter.has_web %}, 'web'{% endif %})
 
 
 @hosts(env.user)
 def stop():
-    run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- if cookiecutter.has_api %}
-    run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
-    {%- if cookiecutter.has_web %}
-    run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
+    _stop('admin'
+        {%- if cookiecutter.has_api %}, 'api'{% endif %}
+        {%- if cookiecutter.has_web %}, 'web'{% endif %})
 
 
 @hosts(env.user)
 def restart():
-    try:    
-        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-        {%- if cookiecutter.has_api %}
-        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-        {%- endif %}
-        {%- if cookiecutter.has_web %}
-        run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-        {%- endif %}
-    except:
-        pass
-
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-admin.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- if cookiecutter.has_api %}
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-api.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
-    {%- if cookiecutter.has_web %}
-    run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi-web.ini' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
+    stop()
+    start()
 
 
 @hosts(env.user)
-def reload():
-    run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/admin.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- if cookiecutter.has_api %}
-    run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/api.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
-    {%- if cookiecutter.has_web %}
-    run('~/.virtualenvs/%s/bin/uwsgi --reload %s/run/web.pid' % (PROJECT_NAME, SOURCE_FOLDER))
-    {%- endif %}
+def start_back():
+    _start_back('admin.back'
+        {%- if cookiecutter.has_api %}, 'api.back'{% endif %}
+        {%- if cookiecutter.has_web %}, 'web.back'{% endif %})
+
+
+@hosts(env.user)
+def stop_back():
+    _stop('admin.back'
+        {%- if cookiecutter.has_api %}, 'api.back'{% endif %}
+        {%- if cookiecutter.has_web %}, 'web.back'{% endif %})
+
+
+@hosts(env.user)
+def restart_back():
+    stop_back()
+    start_back()
 
 
 def setup_ssh():

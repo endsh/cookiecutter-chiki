@@ -1,4 +1,9 @@
 # coding: utf-8
-from {{ cookiecutter.name }} import create_web
 
-app = create_web()
+try:
+    from {{ cookiecutter.name }} import create_web
+    app = create_web()
+except Exception, e:
+    from chiki import start_error    
+    from {{ cookiecutter.name }}.config import WebConfig
+    start_error(config=WebConfig)

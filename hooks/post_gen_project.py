@@ -4,11 +4,13 @@ import shutil
 
 api_files = [
     '{{ cookiecutter.name }}/api.py',
+    'wsgi/api.py',
     'media/api',
     'templates/api',
 ]
 web_files = [
     '{{ cookiecutter.name }}/web.py',
+    'wsgi/web.py',
     'media/web',
     'templates/web',
 ]
