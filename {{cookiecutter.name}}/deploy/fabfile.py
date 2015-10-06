@@ -81,7 +81,7 @@ def clone2setup(name, git):
 
 
 def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
-    run('~/.virtualenvs/%s/bin/pip install -r %s/deploy_requestments.txt' % (name, source_folder))
+    run('~/.virtualenvs/%s/bin/pip install -r %s/requirements.txt' % (name, source_folder))
 
     if extends:
         mkextends()
@@ -90,7 +90,7 @@ def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
 def mkextends():
     run('mkdir -p ~/git')
     gits = {
-       'chiki': "https://https://github.com/endsh/chiki.git",
+       'chiki': "https://github.com/endsh/chiki.git",
        'flask-admin': "https://github.com/flask-admin/flask-admin.git",
     }
     with cd('~/git'):
@@ -106,17 +106,17 @@ def mkenv(source_folder=SOURCE_FOLDER):
 
     etc = '%s/%s' % (source_folder, 'etc')
     put('etc/admin.cfg', etc)
-    put('etc/uwsgi.admin.ini', etc)
-    put('etc/uwsgi.admin.back.ini', etc)
+    put('etc/admin.ini', etc)
+    put('etc/admin.back.ini', etc)
     {%- if cookiecutter.has_api %}
     put('etc/api.cfg', etc)
-    put('etc/uwsgi.api.ini', etc)
-    put('etc/uwsgi.api.back.ini', etc)
+    put('etc/api.ini', etc)
+    put('etc/api.back.ini', etc)
     {%- endif %}
     {%- if cookiecutter.has_web %}
     put('etc/web.cfg', etc)
-    put('etc/uwsgi.web.ini', etc)
-    put('etc/uwsgi.web.back.ini', etc)
+    put('etc/web.ini', etc)
+    put('etc/web.back.ini', etc)
     {%- endif %}
 
 
@@ -162,13 +162,13 @@ def nginx_reload():
 
 def _start(*args):
     for arg in args:
-        run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi.%s.ini' % (
+        run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/%s.ini' % (
             PROJECT_NAME, SOURCE_FOLDER, arg))
 
 
 def _start_back(*args):
     for arg in args:
-        run('CHIKI_BACK=true ~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/uwsgi.%s.ini' % (
+        run('CHIKI_BACK=true ~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/%s.ini' % (
             PROJECT_NAME, SOURCE_FOLDER, arg))
 
 
