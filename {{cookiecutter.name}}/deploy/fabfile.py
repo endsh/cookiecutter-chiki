@@ -21,7 +21,7 @@ class FabricException(Exception):
 
 def all():
     execute(init)
-    execute(deploy)
+    execute(deploy, True)
     execute(nginx)
 
 
