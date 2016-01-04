@@ -13,6 +13,6 @@
     "port": 5000,
     "_copy_without_render": [
         "media/*",
-        "template/*"
+        "templates/*"
     ]
 }
