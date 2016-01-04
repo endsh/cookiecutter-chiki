@@ -1,8 +1,4 @@
 # coding: utf-8
-import sys
-sys.path.append("..")
-import {{ cookiecutter.name }}
-
 from fabric.api import cd, env, local, run, sudo
 from fabric.api import execute, hosts, lcd, put, settings
 from fabric.contrib.files import exists, append

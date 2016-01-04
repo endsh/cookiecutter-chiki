@@ -1,6 +1,6 @@
 # coding: utf-8
 from chiki import init_uploads
-from chiki.admin import ModelView, IndexView, get_static_admin
+from chiki.admin import Admin, ModelView, IndexView, get_static_admin
 from {{ cookiecutter.name }}.base import db
 from {{ cookiecutter.name }}.config import BaseConfig, WebConfig
 
@@ -12,7 +12,7 @@ def init(app):
 
     admin = Admin(
         name=BaseConfig.SITE_NAME,
-        index_view=IndexView(BaseConfig.SITE_NAME, menu_icon_value='diamond'),
+        index_view=IndexView('仪表盘', menu_icon_value='diamond'),
         base_template='base.html',
     )
 
