@@ -12,6 +12,7 @@
     "web_host": "www.simple.com",
     "port": 5000,
     "_copy_without_render": [
-        "*.html"
+        "media/*",
+        "template/*",
     ]
 }
