@@ -1,7 +1,7 @@
 # coding: utf-8
 from chiki import init_uploads
 from chiki.admin import ModelView, IndexView, get_static_admin
-from {{ cookiecutter.name }}.base import admin, db
+from {{ cookiecutter.name }}.base import db
 from {{ cookiecutter.name }}.config import BaseConfig, WebConfig
 
 sync_models = []
