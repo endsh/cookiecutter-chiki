@@ -12,7 +12,7 @@ class BaseConfig(object):
     LOG_FOLDER = os.path.join(ROOT_FOLDER, 'logs')
     STATIC_FOLDER = os.path.join(ROOT_FOLDER, 'media')
     TEMPLATE_FOLDER = os.path.join(ROOT_FOLDER, 'templates')
-    BABEL_DEFAULT_LOCALE = 'zh_CN'    
+    BABEL_DEFAULT_LOCALE = 'zh_CN'
     CHANGE_400_TO_200 = True
 
     # Secret Key
@@ -40,9 +40,10 @@ class AdminConfig(BaseConfig):
     ENVVAR = '{{ cookiecutter.name | upper }}_ADMIN'
     SESSION_COOKIE_NAME = '{{ cookiecutter.name }}.admin'
     STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'admin')
+    RELEASE_STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'admin/dist')
     TEMPLATE_FOLDER = os.path.join(BaseConfig.TEMPLATE_FOLDER, 'admin')
 
-    INDEX_REDIRECT = '/admin/user'
+    INDEX_REDIRECT = '/admin/'
 
     # 后台管理员帐号密码
     ADMIN_USERNAME = 'admin'
@@ -57,6 +58,7 @@ class APIConfig(BaseConfig):
     ENVVAR = '{{ cookiecutter.name | upper }}_API'
     SESSION_COOKIE_NAME = '{{ cookiecutter.name }}.api'
     STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'api')
+    RELEASE_STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'api/dist')
     TEMPLATE_FOLDER = os.path.join(BaseConfig.TEMPLATE_FOLDER, 'api')
 {%- endif %}
 {%- if cookiecutter.has_web %}
@@ -69,5 +71,6 @@ class WebConfig(BaseConfig):
     ENVVAR = '{{ cookiecutter.name | upper }}_WEB'
     SESSION_COOKIE_NAME = '{{ cookiecutter.name }}'
     STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'web')
+    RELEASE_STATIC_FOLDER = os.path.join(BaseConfig.STATIC_FOLDER, 'web/dist')
     TEMPLATE_FOLDER = os.path.join(BaseConfig.TEMPLATE_FOLDER, 'web')
 {%- endif %}

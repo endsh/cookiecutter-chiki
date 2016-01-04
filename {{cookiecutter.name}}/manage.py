@@ -19,7 +19,7 @@ def api(debug=False, reloader=False, host='0.0.0.0', port=APIConfig.PORT):
     app.run(debug=debug, use_reloader=reloader, host=host, port=port)
 
 
-{% endif %}
+{% endif -%}
 {% if cookiecutter.has_web -%}
 @manager.command
 def web(debug=False, reloader=False, host='0.0.0.0', port=WebConfig.PORT):
@@ -28,7 +28,7 @@ def web(debug=False, reloader=False, host='0.0.0.0', port=WebConfig.PORT):
     app.run(debug=debug, use_reloader=reloader, host=host, port=port)
 
 
-{% endif %}
+{% endif -%}
 @manager.command
 def test():
     """ Run the tests. """
@@ -36,6 +36,19 @@ def test():
     exit_code = pytest.main([BaseConfig.TEST_FOLDER])
     return exit_code
 
-    
+
+@manager.command
+@manager.option('name')
+def service(name, model='simple'):
+    module = '{{ cookiecutter.name }}.services.%s' % name
+    action = __import__(module)
+    for sub in module.split('.')[1:]:
+        action = getattr(action, sub)
+    if inspect.getargspec(action.run)[0]:
+        action.run(model)
+    else:
+        action.run()
+
+
 if __name__ == '__main__':
     manager.run()
