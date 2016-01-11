@@ -10,8 +10,7 @@ media = MediaManager(
     ],
     js=['js/web.min.js'],
     jsx=[
-        'libs/jquery-1.11.1.js',
-        'libs/jquery.form.js',
+        'bower_components/jquery/dist/jquery.js',
         'libs/bootstrap/js/bootstrap.js',
         'dist/js/web.js'
     ],
