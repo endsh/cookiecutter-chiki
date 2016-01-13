@@ -17,6 +17,5 @@ data/uploads
 docs/.build
 docs/_build
 tests/__pycache__
-media/admin/node_modules
-media/api/node_modules
-media/web/node_modules
+node_modules
+bower_components
