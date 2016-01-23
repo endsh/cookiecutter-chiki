@@ -77,6 +77,7 @@ def clone2setup(name, git):
 
 
 def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
+    run('source /usr/local/bin/virtualenvwrapper.sh && mkvirtualenv %s' % name)
     run('~/.virtualenvs/%s/bin/pip install -r %s/requirements.txt' % (name, source_folder))
 
     if extends:

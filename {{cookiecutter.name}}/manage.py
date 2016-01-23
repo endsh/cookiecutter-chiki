@@ -1,4 +1,5 @@
 # coding: utf-8
+import inspect
 from flask.ext.script import Manager, Server
 from {{ cookiecutter.name }} import create_admin
 {%- if cookiecutter.has_api %}, create_api{% endif %}

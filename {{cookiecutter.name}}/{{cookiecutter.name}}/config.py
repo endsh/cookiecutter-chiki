@@ -35,7 +35,7 @@ class BaseConfig(object):
 
 class AdminConfig(BaseConfig):
     """ 后台管理通用配置 """
-    
+
     PORT = {{ cookiecutter.port | int }}
     ENVVAR = '{{ cookiecutter.name | upper }}_ADMIN'
     SESSION_COOKIE_NAME = '{{ cookiecutter.name }}.admin'
