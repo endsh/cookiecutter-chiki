@@ -4,7 +4,7 @@ from chiki.admin import Admin, ModelView, IndexView, get_static_admin
 from chiki.contrib.common import Item, StatLog, TraceLog
 from chiki.contrib.common import ItemView, StatLogView, TraceLogView
 from chiki.contrib.users.admin import (
-    WeChatUserView, QQUserView, WeiBoUser,
+    UserView, WeChatUserView, QQUserView, WeiBoUser,
     UserLogView, PhoneCodeView, EmailCodeView,
 )
 from {{ cookiecutter.name }}.base import db, um

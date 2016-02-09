@@ -30,7 +30,7 @@ class BaseConfig(object):
 
     # 版本，网站名称等
     VERSION = '{{ cookiecutter.version }}'
-    SITE_NAME = u'{{ cookiecutter.name }}'
+    SITE_NAME = u'{{ cookiecutter.site_name }}'
 
 
 class AdminConfig(BaseConfig):

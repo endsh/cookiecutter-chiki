@@ -2,6 +2,7 @@
     "author": "linshao",
     "email": "438985635@qq.com",
     "name": "simple",
+    "site_name": "simple",
     "project_name": "Simple",
     "project_short_description": "Simple web project based on chiki.",
     "version": "0.1.0",
