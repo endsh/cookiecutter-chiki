@@ -33,8 +33,8 @@ def init_um(app):
 def init(app):
     db.init_app(app)
     media.init_app(app)
-    wapi.init_app(app)
-
     init_um(app)
+
+    wapi.init_app(app)
     init_routes(app)
     init_uploads(app)
