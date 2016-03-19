@@ -84,6 +84,11 @@ def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
         mkextends()
 
 
+@hosts(env.user)
+def mkext():
+    mkextends()
+
+
 def mkextends():
     run('mkdir -p ~/git')
     gits = {
