@@ -1,6 +1,6 @@
 # coding: utf-8
 from chiki import MediaManager, init_uploads
-from {{ cookiecutter.name }}.base import db, um, wapi
+from {{ cookiecutter.name }}.base import db, um, wapi, robot
 
 media = MediaManager(
     css=['css/web.min.css'],
@@ -34,7 +34,8 @@ def init(app):
     db.init_app(app)
     media.init_app(app)
     init_um(app)
-
-    wapi.init_app(app)
     init_routes(app)
     init_uploads(app)
+    robot.init_app(app)
+    robot.logger = app.logger
+    wapi.init_app(app)

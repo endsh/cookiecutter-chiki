@@ -51,5 +51,12 @@ def service(name, model='simple'):
         action.run()
 
 
+@manager.command
+def create_menu():
+    """ create wechat menu """
+    from {{ cookiecutter.name }}.robot import create_menu
+    create_menu()
+
+
 if __name__ == '__main__':
     manager.run()

@@ -8,6 +8,7 @@ class BaseConfig(object):
     # 目录, i18n
     ROOT_FOLDER = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     DATA_FOLDER = os.path.join(ROOT_FOLDER, 'data')
+    ETC_FOLDER = os.path.join(ROOT_FOLDER, 'etc')
     DOC_FOLDER = os.path.join(ROOT_FOLDER, 'docs')
     LOG_FOLDER = os.path.join(ROOT_FOLDER, 'logs')
     STATIC_FOLDER = os.path.join(ROOT_FOLDER, 'media')
@@ -23,14 +24,52 @@ class BaseConfig(object):
     MONGODB_SETTINGS = dict(host='127.0.0.1', port=27017, db='{{ cookiecutter.name }}')
 
     UPLOADS = dict(
-        type='local', 
-        link='/uploads/%s', 
+        type='local',
+        link='/uploads/%s',
         path=os.path.join(DATA_FOLDER, 'uploads'),
     )
 
     # 版本，网站名称等
     VERSION = '{{ cookiecutter.version }}'
     SITE_NAME = u'{{ cookiecutter.site_name }}'
+
+    CHIKI_USER = dict(
+        allow_email=False,
+        allow_phone=True,
+        oauth_model='auto',
+        login_next='/',
+        oauth_auto_update=True,
+    )
+
+    WXPAY = dict(
+        appid='',
+        mchid='',
+        key='',
+        send_name='{{ cookiecutter.site_name }}',
+        client_ip='',
+        cert=(
+            os.path.join(ETC_FOLDER, 'cert/apiclient_cert.pem'),
+            os.path.join(ETC_FOLDER, 'cert/apiclient_key.pem'),
+        )
+    )
+
+    WXAUTH = dict(
+        mp=dict(
+            appid='',
+            secret='',
+        )
+    )
+    WEROBOT_TOKEN = 'wechat'
+    WEROBOT_ROLE = '/wechat'
+
+    SMS_TPL = u'您的验证码是：%s,该验证码10分钟内有效，如非本人操作，请忽略！'
+    SMS_IHUYI = dict(
+        account='',
+        password='',
+    )
+
+    WEB_HOST = ''
+    PAGE_LOGIN_REQUIRED = False
 
 
 class AdminConfig(BaseConfig):

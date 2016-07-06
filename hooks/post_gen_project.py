@@ -3,13 +3,13 @@ import os
 import shutil
 
 api_files = [
-    '{{ cookiecutter.name }}/api.py',
+    '{{ cookiecutter.name }}/api',
     'wsgi/api.py',
     'media/api',
     'templates/api',
 ]
 web_files = [
-    '{{ cookiecutter.name }}/web.py',
+    '{{ cookiecutter.name }}/web',
     'wsgi/web.py',
     'media/web',
     'templates/web',
