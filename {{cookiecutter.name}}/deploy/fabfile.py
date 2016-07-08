@@ -77,8 +77,10 @@ def clone2setup(name, git):
 
 
 def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
+    run('mkdir -p ~/.pip')
+    put('files/pip.conf', '~/.pip/pip.conf')
     run('source /usr/local/bin/virtualenvwrapper.sh && mkvirtualenv %s' % name)
-    run('~/.virtualenvs/%s/bin/pip install -r %s/requirements.txt' % (name, source_folder))
+    run('~/.virtualenvs/%s/bin/pip install -r %s/requirements.txt --trusted-host mirrors.aliyun.com' % (name, source_folder))
 
     if extends:
         mkextends()
