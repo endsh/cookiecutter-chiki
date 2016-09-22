@@ -2,7 +2,7 @@
 from chiki import init_admin
 {%- if cookiecutter.has_api %}, init_api{% endif %}
 {%- if cookiecutter.has_web %}, init_web{% endif %}
-from {{ cookiecutter.name }} import admin, robot, users
+from {{ cookiecutter.name }} import admin, robot
 {%- if cookiecutter.has_api %}, api{% endif %}
 {%- if cookiecutter.has_web %}, web{% endif %}
 from {{ cookiecutter.name }}.config import AdminConfig

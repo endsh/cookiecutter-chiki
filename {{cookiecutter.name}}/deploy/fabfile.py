@@ -28,14 +28,18 @@ def init():
 
 
 def build():
+    sudo('rm -rf /etc/apt/sources.list.d/mongodb.list')
+    sudo('echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2 main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list')
     sudo('apt-get update')
-    sudo('apt-get install -y vim software-properties-common')
-    sudo('apt-get install -y python-setuptools')
+    sudo(
+        'apt-get install -y vim software-properties-common'
+        ' python-setuptools nginx mongodb-org --force-yes'
+        ' libmysqlclient-dev git gcc g++ unzip'
+        ' python-virtualenv python-dev subversion curl'
+        ' libxml2-dev libxslt1-dev libfreetype6-dev'
+        ' libjpeg62 libpng3 libjpeg-dev libpng12-dev'
+    )
     sudo('easy_install pip supervisor')
-    sudo('apt-get install -y python-virtualenv')
-    sudo('apt-get install -y python-dev subversion curl')
-    sudo('apt-get install -y libmysqlclient-dev git gcc g++ unzip')
-    sudo('apt-get install -y nginx mongodb')
     sudo('pip install virtualenvwrapper')
 
 
