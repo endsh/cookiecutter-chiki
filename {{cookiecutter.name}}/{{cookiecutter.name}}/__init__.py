@@ -12,18 +12,18 @@ from {{ cookiecutter.name }}.config import AdminConfig
 
 def create_admin(pyfile=None):
     return init_admin(admin.init, AdminConfig, pyfile=pyfile,
-        template_folder=AdminConfig.TEMPLATE_FOLDER)
+                      template_folder=AdminConfig.TEMPLATE_FOLDER)
 {%- if cookiecutter.has_api %}
 
 
 def create_api(pyfile=None):
     return init_api(api.init, APIConfig, pyfile=pyfile,
-        template_folder=APIConfig.TEMPLATE_FOLDER)
+                    template_folder=APIConfig.TEMPLATE_FOLDER)
 {%- endif %}
 {%- if cookiecutter.has_web %}
 
 
 def create_web(pyfile=None):
     return init_web(web.init, WebConfig, pyfile=pyfile,
-        template_folder=WebConfig.TEMPLATE_FOLDER)
+                    template_folder=WebConfig.TEMPLATE_FOLDER)
 {%- endif %}
