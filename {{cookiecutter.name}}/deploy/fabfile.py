@@ -29,7 +29,10 @@ def init():
 
 def build():
     sudo('rm -rf /etc/apt/sources.list.d/mongodb.list')
-    sudo('echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2 main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list')
+    sudo(
+        'echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2'
+        ' main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list'
+    )
     sudo('apt-get update')
     sudo(
         'apt-get install -y vim software-properties-common'
@@ -234,3 +237,9 @@ def setup_ssh():
     local('cp files/id_rsa ~/.ssh/id_%s' % PROJECT_NAME)
     local('cp files/id_rsa.pub ~/.ssh/id_%s.pub' % PROJECT_NAME)
     local('chmod -R 0600 ~/.ssh/id_%s*' % PROJECT_NAME)
+
+
+@hosts(env.user)
+def crontab():
+    put('files/cron.conf', '/home/%s/cron.conf' % PROJECT_NAME)
+    run('crontab ~/cron.conf')

@@ -36,6 +36,4 @@ def init(app):
     init_um(app)
     init_routes(app)
     init_uploads(app)
-    robot.init_app(app)
-    robot.logger = app.logger
     wapi.init_app(app)
