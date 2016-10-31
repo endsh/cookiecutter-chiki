@@ -1,0 +1,162 @@
+{% extends "users/base.html" %}
+{% block title %}帐号绑定{% endblock %}
+
+{% macro bind_phone(phone_form) %}
+	<div class="message">{{ phone_form | alert }}</div>
+	<form class="auth-form bind-form" method="post" data-send=".phone-box,.verify-code-box" data-access=".phone-box,.authcode-box" data-complete=".phone-box,.wechat-box,.password-box" data-next="{{ next }}">
+		{{ phone_form.csrf_token | kfield_inline }}
+		<div class="weui_cells weui_cells_form">
+	        <div class="weui_cell phone-box">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ phone_form.phone(
+						class_="weui_input",
+						data_label=phone_form.phone.label.text,
+						placeholder=phone_form.phone.label.text,
+						data_empty='true',
+						data_regx='^1\d{10}$',
+					) }}
+	            </div>
+	        </div>
+	        <div class="weui_cell wechat-box">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ phone_form.wechat(
+						class_="weui_input",
+						data_label=phone_form.wechat.label.text,
+						placeholder=phone_form.wechat.label.text,
+						data_empty='true',
+					) }}
+	            </div>
+	        </div>
+	        <div class="weui_cell verify-code-box weui_vcode">
+		        <div class="weui_cell_bd weui_cell_primary">
+		            <input id="verify_code" maxlength="4" name="verify_code" class="weui_input" placeholder="验证码" type="text">
+		        </div>
+		        <div class="weui_cell_ft">
+		            <img data-src="/verify_code?key=users_reset_password_phone" id="verify_code_img" onclick="$(this).attr('src', '/verify_code?key=users_reset_password_phone&amp;t=' + Math.random());" src="/verify_code?key=users_reset_password_phone" style="cursor:pointer">
+		        </div>
+	        </div>
+	        <div class="weui_cell authcode-box" style="display:none">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ phone_form.authcode(
+						class_="weui_input",
+						data_label=phone_form.authcode.label.text,
+						placeholder=phone_form.authcode.label.text,
+						data_empty='true',
+					) }}
+	            </div>
+	            <div class="weui_cell_fd">
+					<a class="resend disabled" href="javascript:;" style="display:none">重新发送</a>
+				</div>
+	        </div>
+	        <div class="weui_cell password-box" style="display:none">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ phone_form.password(
+						class_="weui_input",
+						placeholder='设置密码',
+						data_empty='true',
+						data_label='密码',
+						data_min=6,
+						data_max=18,
+						data_strip='false',
+						data_regx='^[\w\d\-\[\]{}|\\,.\/<>;:\'"_`~!@#$%^&*()+= ]+$',
+					) }}
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	    	<button type="submit" class="weui_btn weui_btn_primary">发送验证码</button>
+	    </div>
+	</form>
+{% endmacro %}
+
+{% macro bind_email(email_form) %}
+	<div class="message">{{ email_form | alert }}</div>
+	<form class="auth-form bind-email-form" method="post" data-send=".email-box" data-access=".email-box,.authcode-box" data-complete=".email-box,.password-box" data-next="{{ next }}">
+		{{ email_form.csrf_token | kfield_inline }}
+		<div class="weui_cells weui_cells_form">
+	        <div class="weui_cell email-box">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ email_form.email(
+						class_="weui_input",
+						data_label=email_form.email.label.text,
+						placeholder=email_form.email.label.text,
+						data_empty='true',
+						data_regx='^[\w\d]+[\d\w_.]+@([\d\w]+)\.([\d\w]+)(?:\.[\d\w]+)?$',
+					) }}
+	            </div>
+	        </div>
+	        <div class="weui_cell authcode-box">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ email_form.authcode(
+						class_="weui_input",
+						data_label=email_form.authcode.label.text,
+						placeholder=email_form.authcode.label.text,
+					) }}
+	            </div>
+	            <div class="weui_cell_ft">
+	            	<a class="resend disabled" href="javascript:;" style="display:none">重新发送</a>
+	            </div>
+	        </div>
+	        <div class="weui_cell password-box">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ phone_form.password(
+						class_="weui_input",
+						placeholder='设置密码',
+						data_empty='true',
+						data_label='密码',
+						data_min=6,
+						data_max=18,
+						data_strip='false',
+						data_regx='^[\w\d\-\[\]{}|\\,.\/<>;:\'"_`~!@#$%^&*()+= ]+$',
+					) }}
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	    	<button type="submit" class="weui_btn weui_btn_primary">发送验证邮件</button>
+	    </div>
+	</form>
+	<div class="email-access"></div>
+{% endmacro %}
+
+{% block main %}
+{% if um.need_email and um.need_phone %}
+<div class="weui_tab">
+    <div class="weui_navbar">
+        <a class="use-phone weui_navbar_item{% if request.args.get('action') != 'phone' %} weui_bar_item_on{% endif %}" href="#bind-phone">
+            绑定手机
+        </a>
+        <a class="use-email weui_navbar_item{% if request.args.get('action') == 'email' %} weui_bar_item_on{% endif %}" href="#bind-email">
+            绑定邮箱
+        </a>
+    </div>
+    <div id="bind-phone" class="bind-phone weui_tab_bd" style="display:none">{{ bind_phone(phone_form) }}</div>
+    <div id="bind-email" class="bind-email weui_tab_bd" style="display:none">{{ bind_email(email_form) }}</div>
+</div>
+{% elif um.need_phone %}
+<div id="bind-phone" class="bind-phone">{{ bind_phone(phone_form) }}</div>
+{% elif um.need_email %}
+<div id="bind-email" class="bind-email">{{ bind_email(email_form) }}</div>
+{% endif %}
+
+<script type="text/javascript">
+$(function () {
+	$('.weui_tab_bd').hide()
+    $($('.weui_bar_item_on').attr('href')).show()
+    $('.weui_navbar_item').click(function () {
+        $('.weui_tab_bd').hide()
+        $($(this).attr('href')).show()
+    })
+})
+</script>	
+{% endblock %}
+
+{% block footer %}
+{% if um.config.oauth_model != 'force' %}
+<div class="text-center links">
+	<form class="bind-auto-form" method="post" data-next="{{ next }}">
+		<button type="submit" class="btn btn-link">跳过帐号绑定</button>
+	</form>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,22 +1,28 @@
 # coding: utf-8
 from chiki import MediaManager, init_uploads
-from {{ cookiecutter.name }}.base import db, um, wapi, robot
+from {{ cookiecutter.name }}.base import db, um, wapi
 
 media = MediaManager(
     css=['css/web.min.css'],
     cssx=[
-        'libs/bootstrap/css/bootstrap.css',
-        'dist/css/web.css'
+        'bower_components/weui/dist/style/weui.css',
+        'node_modules/jquery-weui/dist/css/jquery-weui.css',
+        'bower_components/bxslider-4/dist/jquery.bxslider.min.css',
+        'dist/css/web.css',
     ],
     js=['js/web.min.js'],
     jsx=[
         'bower_components/jquery/dist/jquery.js',
         'bower_components/jquery-form/jquery.form.js',
         'bower_components/jquery-tmpl/jquery.tmpl.js',
-        'libs/bootstrap/js/bootstrap.js',
-        'libs/area.js',
-        'dist/js/web.js'
-    ],
+        'bower_components/bxslider-4/dist/jquery.bxslider.min.js',
+        'node_modules/jquery-weui/dist/js/jquery-weui.js',
+        'node_modules/jquery-weui/dist/js/city-picker.js',
+        'node_modules/jquery-weui/dist/js/swiper.js',
+        'bower_components/jquery_lazyload/jquery.lazyload.js',
+        'bower_components/fastclick/lib/fastclick.js',
+        'dist/js/web.js',
+    ]
 )
 
 

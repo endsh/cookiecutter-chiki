@@ -1,0 +1,32 @@
+{% extends "users/base.html" %}
+
+{% block title %}用户登录{% endblock %}
+
+{% block main %}
+	<div class="message">{{ form | alert }}</div>
+	<form class="auth-form login-form" action="{{ url_for('users.login') }}" method="post" data-next="{{ next }}">
+		<div class="weui_cells weui_cells_form">
+	        <div class="weui_cell">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ form.account | kfield_inline(class='weui_input') }}
+	            </div>
+	        </div>
+	        <div class="weui_cell">
+	            <div class="weui_cell_bd weui_cell_primary">
+					{{ form.password | kfield_inline(class='weui_input') }}
+	            </div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	    	<button type="submit" class="weui_btn weui_btn_primary">登录</button>
+	    </div>
+	</form>
+{% endblock %}
+
+{% block footer %}
+<div class="text-center links">
+	<a href="{{ url_for('users.reset_password') }}">找回密码</a> | 
+	<a href="/">首页</a> | 
+	<a href="{{ url_for('users.register') }}">注册账号</a>
+</div>
+{% endblock %}

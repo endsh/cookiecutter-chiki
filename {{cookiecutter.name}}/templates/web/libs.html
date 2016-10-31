@@ -1,0 +1,17 @@
+
+{% macro render_msg(msg, title='消息提示', style='info', btn='返回', url='javascript:history.go(-1);', show_btn=False) %}
+    <div class="weui_msg">
+        <div class="weui_icon_area"><i class="weui_icon_{{ style }} weui_icon_msg"></i></div>
+        <div class="weui_text_area">
+            <h2 class="weui_msg_title">{{ title }}</h2>
+            <p class="weui_msg_desc">{{ msg }}</p>
+        </div>
+        {% if show_btn %}
+        <div class="weui_opr_area">
+            <p class="weui_btn_area">
+                <a href="{{ url }}" class="weui_btn weui_btn_default">{{ btn }}</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+{% endmacro %}
