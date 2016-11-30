@@ -22,6 +22,7 @@
 {% block footer_script %}{% endblock %}
 {% block baidu_tongji %}
 <div style="display:none;">
+	{{ Item.data('tongji_script', '', name='统计代码') | safe }}
 </div>
 {% endblock %}
 </body>

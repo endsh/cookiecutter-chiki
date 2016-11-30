@@ -49,3 +49,12 @@ whichcraft==0.1.1
 wsgiref==0.1.2
 xmltodict==0.9.2
 fabric==1.10.2
+rsa==3.4.2
+jpush==3.2.0
+Flask-DebugToolbar==0.10.0
+qrcode==5.3
+Flask-Mail==0.9.1
+line-profiler>=1.0b3
+ipython==0.13
+Flask-Session==0.2.3
+Flask-DebugToolbar-LineProfilerPanel==1.0.2
