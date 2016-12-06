@@ -30,7 +30,7 @@ def init():
 def build():
     sudo('rm -rf /etc/apt/sources.list.d/mongodb.list')
     sudo(
-        'echo "deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/3.2'
+        'echo "deb http://mirrors.aliyun.com/mongodb/apt/debian wheezy/mongodb-org/3.2'
         ' main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list'
     )
     sudo('apt-get update')
@@ -40,7 +40,7 @@ def build():
         ' libmysqlclient-dev git gcc g++ unzip'
         ' python-virtualenv python-dev subversion curl'
         ' libxml2-dev libxslt1-dev libfreetype6-dev'
-        ' libjpeg62 libpng3 libjpeg-dev libpng12-dev'
+        ' libjpeg62 libpng3 libjpeg-dev libpng12-dev libffi-dev'
     )
     sudo('easy_install pip supervisor')
     sudo('pip install virtualenvwrapper')
@@ -141,7 +141,7 @@ def sync(msg='auto commit'):
     execute(update)
 
 
-def commit(msg='auto commit'):   
+def commit(msg='auto commit'):
     local('git add --all ..')
     local('git commit -m "%s"' % msg)
     local('git push -u origin master')
@@ -243,3 +243,15 @@ def setup_ssh():
 def crontab():
     put('files/cron.conf', '/home/%s/cron.conf' % PROJECT_NAME)
     run('crontab ~/cron.conf')
+
+
+@hosts(env.user)
+def service(command):
+    with cd('~/%s' % PROJECT_NAME):
+        run("~/.virtualenvs/%s/bin/python manage.py service %s" % (
+            PROJECT_NAME, command))
+
+
+@hosts(env.user)
+def tail_log(name='uwsgi.admin', line=100):
+    run('tail -n %d ~/%s/logs/%s.log' % (int(line), PROJECT_NAME, name))
