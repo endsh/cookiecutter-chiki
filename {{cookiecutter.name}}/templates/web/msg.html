@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}消息提示{% endblock %}
+{% block body_class %}bg{% endblock %}
+
+{% block body %}
+<div class="weui_msg">
+    <div class="weui_icon_area"><i class="weui_icon_{{ style }} weui_icon_msg"></i></div>
+    <div class="weui_text_area">
+        <h2 class="weui_msg_title">消息提示</h2>
+        <p class="weui_msg_desc">{{ msg }}</p>
+    </div>
+    {% if url %}
+    <div class="weui_opr_area">
+        <p class="weui_btn_area">
+            <a href="{{ url | safe }}" class="weui_btn weui_btn_primary">{{ btn or '确定'}}</a>
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% if timeout > 0 %}
+<script type="text/javascript">
+$(function () {
+    setTimeout(function () {
+        window.location.href = '{{ url or '/' }}'
+    }, {{ timeout }} * 1000)
+})
+</script>
+{% endif %}
+{% endblock %}

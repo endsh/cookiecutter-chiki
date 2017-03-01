@@ -58,3 +58,4 @@ line-profiler>=1.0b3
 ipython==0.13
 Flask-Session==0.2.3
 Flask-DebugToolbar-LineProfilerPanel==1.0.2
+pycparser==2.17
