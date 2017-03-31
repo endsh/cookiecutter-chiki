@@ -58,4 +58,7 @@ line-profiler>=1.0b3
 ipython==0.13
 Flask-Session==0.2.3
 Flask-DebugToolbar-LineProfilerPanel==1.0.2
-pycparser==2.17
+pycrypto==2.6.1
+gevent==1.2.0
+certifi==2015.04.28
+tldextract==2.0.2
