@@ -1,6 +1,10 @@
 # coding: utf-8
 import os
-from {{ cookiecutter.name }}.config import BaseConfig
+
+ROOT = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
+LOG_FOLDER = os.path.join(ROOT, 'logs')
+STATIC_FOLDER = os.path.join(ROOT, 'media/admin')
 
 LOGGING = {
     'SMTP': {
@@ -11,7 +15,7 @@ LOGGING = {
         'PASSWORD': '{{ cookiecutter.log_email_password }}',
     },
     'FILE': {
-        'PATH': os.path.join(BaseConfig.LOG_FOLDER, 'admin.log'),
+        'PATH': os.path.join(LOG_FOLDER, 'admin.log'),
         'MAX_BYTES': 1024 * 1024 * 10,
         'BACKUP_COUNT': 5,
     }

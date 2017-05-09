@@ -9,6 +9,10 @@ from {{ cookiecutter.name }}.config import AdminConfig
 {%- if cookiecutter.has_api %}, APIConfig{% endif %}
 {%- if cookiecutter.has_web %}, WebConfig{% endif %}
 
+__version__ = '1.0.0'
+__author__ = 'User'
+__email__ = 'user@qq.com'
+
 
 def create_admin(pyfile=None):
     return init_admin(admin.init, AdminConfig, pyfile=pyfile,

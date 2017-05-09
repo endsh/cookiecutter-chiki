@@ -1,257 +1,29 @@
 # coding: utf-8
-from fabric.api import cd, env, local, run, sudo
-from fabric.api import execute, hosts, lcd, put, settings
-from fabric.contrib.files import exists, append
-
-env.user = '{{ cookiecutter.name }}@chiki.org'
-env.password = ''
-ROOT = 'root@chiki.org'
-PROJECT_NAME = '{{ cookiecutter.name }}'
-SOURCE_FOLDER = '/home/%s/%s' % ('{{ cookiecutter.name }}', PROJECT_NAME)
-REPO_URL = 'git@gitlab.com:tinysh/{{ cookiecutter.name }}.git'
-
-
-class FabricException(Exception):
-    pass
-
-
-def all():
-    execute(init)
-    execute(deploy, True)
-    execute(nginx)
-
-
-@hosts(ROOT)
-def init():
-    build()
-    user('{{ cookiecutter.name }}')
-
-
-def build():
-    sudo('rm -rf /etc/apt/sources.list.d/mongodb.list')
-    sudo(
-        'echo "deb http://mirrors.aliyun.com/mongodb/apt/debian wheezy/mongodb-org/3.2'
-        ' main" | tee /etc/apt/sources.list.d/mongodb-org-3.2.list'
-    )
-    sudo('apt-get update')
-    sudo(
-        'apt-get install -y vim software-properties-common'
-        ' python-setuptools nginx mongodb-org --force-yes'
-        ' libmysqlclient-dev git gcc g++ unzip'
-        ' python-virtualenv python-dev subversion curl'
-        ' libxml2-dev libxslt1-dev libfreetype6-dev'
-        ' libjpeg62 libpng3 libjpeg-dev libpng12-dev libffi-dev libssl-dev'
-    )
-    sudo('easy_install pip supervisor')
-    sudo('pip install virtualenvwrapper')
-
-
-def user(name):
-    if not exists('/home/%s' % name):
-        sudo('adduser %s' % name)
-    run('mkdir -p /home/%s/.ssh' % name)
-    put('files/id_rsa', '/home/%s/.ssh' % name)
-    run('chmod 600 /home/%s/.ssh/id_rsa' % name)
-    run('chown -R %s:%s /home/%s' % (name, name, name))
-
-
-@hosts(env.user)
-def deploy(extends=False):
-    clone_code()
-    mkvir(extends=extends)
-    mkenv()
-
-
-@hosts(env.user)
-def update():
-    clone_code()
-
-
-def clone_code(source_folder=SOURCE_FOLDER):
-    if exists(source_folder + '/.git'):
-        run('cd %s && git stash && git pull' % source_folder)
-    else:
-        run('git clone %s %s' % (REPO_URL, source_folder))
-
-
-def clone2setup(name, git):
-    if not exists(name):
-        run('git clone %s %s' % (git, name))
-    else:
-        run('cd %s && git stash && git pull' % name)
-    with cd(name):
-        run('~/.virtualenvs/%s/bin/python setup.py install' % PROJECT_NAME)
-
-
-def mkvir(name=PROJECT_NAME, source_folder=SOURCE_FOLDER, extends=False):
-    run('mkdir -p ~/.pip')
-    put('files/pip.conf', '~/.pip/pip.conf')
-    run('source /usr/local/bin/virtualenvwrapper.sh && mkvirtualenv %s' % name)
-    run('~/.virtualenvs/%s/bin/pip install -r %s/requirements.txt' % (name, source_folder))
-
-    if extends:
-        mkextends()
-
-
-@hosts(env.user)
-def mkext():
-    mkextends()
-
-
-def mkextends():
-    run('mkdir -p ~/git')
-    gits = {
-       'chiki': "https://github.com/endsh/chiki.git",
-       'flask-admin': "https://github.com/flask-admin/flask-admin.git",
-    }
-    with cd('~/git'):
-        for name, git in gits.iteritems():
-            clone2setup(name, git)
-
-
-def mkenv(source_folder=SOURCE_FOLDER):
-    put('files/bash_profile', '~/.bash_profile')
-    append('~/.bashrc' , 'source ~/.bash_profile')
-    for dirname in ['etc', 'run', 'logs']:
-        run('mkdir -p %s/%s' % (source_folder, dirname))
-
-    etc = '%s/%s' % (source_folder, 'etc')
-    put('etc/admin.cfg', etc)
-    put('etc/admin.ini', etc)
-    put('etc/admin.back.ini', etc)
-    {%- if cookiecutter.has_api %}
-    put('etc/api.cfg', etc)
-    put('etc/api.ini', etc)
-    put('etc/api.back.ini', etc)
-    {%- endif %}
-    {%- if cookiecutter.has_web %}
-    put('etc/web.cfg', etc)
-    put('etc/web.ini', etc)
-    put('etc/web.back.ini', etc)
-    {%- endif %}
-
-
-def up(msg='auto commit'):
-    sync(msg)
-    execute(restart)
-
-
-def sync(msg='auto commit'):
-    commit(msg)
-    execute(update)
-
-
-def commit(msg='auto commit'):
-    local('git add --all ..')
-    local('git commit -m "%s"' % msg)
-    local('git push -u origin master')
-
-
-@hosts(env.user)
-def pip():
-    run('pip install -r %s/requirements.txt' % SOURCE_FOLDER)
-
-
-def spip():
-    sync()
-    execute(pip)
-
-
-@hosts(ROOT)
-def nginx():
-    nginx_config()
-    nginx_reload()
-
-
-def nginx_config():
-    put('nginx/{{ cookiecutter.name }}.nginx.conf', '/etc/nginx/sites-enabled')
-
-
-def nginx_reload():
-    run('service nginx reload')
-
-
-def _start(*args):
-    for arg in args:
-        run('~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/%s.ini' % (
-            PROJECT_NAME, SOURCE_FOLDER, arg))
-
-
-def _start_back(*args):
-    for arg in args:
-        run('CHIKI_BACK=true ~/.virtualenvs/%s/bin/uwsgi --ini %s/etc/%s.ini' % (
-            PROJECT_NAME, SOURCE_FOLDER, arg))
-
-
-def _stop(*args):
-    for arg in args:
-        with settings(abort_exception=FabricException):
-            try:
-                run('~/.virtualenvs/%s/bin/uwsgi --stop %s/run/%s.pid' % (
-                        PROJECT_NAME, SOURCE_FOLDER, arg))
-            except FabricException, e:
-                print str(e)
-
-
-@hosts(env.user)
-def start():
-    _start('admin'
-        {%- if cookiecutter.has_api %}, 'api'{% endif %}
-        {%- if cookiecutter.has_web %}, 'web'{% endif %})
-
-
-@hosts(env.user)
-def stop():
-    _stop('admin'
-        {%- if cookiecutter.has_api %}, 'api'{% endif %}
-        {%- if cookiecutter.has_web %}, 'web'{% endif %})
-
-
-@hosts(env.user)
-def restart():
-    stop()
-    start()
-
-
-@hosts(env.user)
-def start_back():
-    _start_back('admin.back'
-        {%- if cookiecutter.has_api %}, 'api.back'{% endif %}
-        {%- if cookiecutter.has_web %}, 'web.back'{% endif %})
-
-
-@hosts(env.user)
-def stop_back():
-    _stop('admin.back'
-        {%- if cookiecutter.has_api %}, 'api.back'{% endif %}
-        {%- if cookiecutter.has_web %}, 'web.back'{% endif %})
-
-
-@hosts(env.user)
-def restart_back():
-    stop_back()
-    start_back()
-
-
-def setup_ssh():
-    local('cp files/id_rsa ~/.ssh/id_%s' % PROJECT_NAME)
-    local('cp files/id_rsa.pub ~/.ssh/id_%s.pub' % PROJECT_NAME)
-    local('chmod -R 0600 ~/.ssh/id_%s*' % PROJECT_NAME)
-
-
-@hosts(env.user)
-def crontab():
-    put('files/cron.conf', '/home/%s/cron.conf' % PROJECT_NAME)
-    run('crontab ~/cron.conf')
-
-
-@hosts(env.user)
-def service(command):
-    with cd('~/%s' % PROJECT_NAME):
-        run("~/.virtualenvs/%s/bin/python manage.py service %s" % (
-            PROJECT_NAME, command))
-
-
-@hosts(env.user)
-def tail_log(name='uwsgi.admin', line=100):
-    run('tail -n %d ~/%s/logs/%s.log' % (int(line), PROJECT_NAME, name))
+import os
+from chiki import import_file
+from chiki.deploy import *
+from fabric.api import env
+
+password = ''
+env.update(dict(
+    user='dev',
+    password=password,
+    user_password=password,
+    sudo_password='',
+    project='{{ cookiecutter.name }}',
+    path='/home/dev/data/{{ cookiecutter.name }}',
+    src='/home/dev/src',
+    dist='/home/dev/dist',
+    repo='git@gitlab.com:xiaoku/{{ cookiecutter.name }}.git',
+    shell="/bin/bash -l -i -c",
+    apps=['admin'
+    {%- if cookiecutter.has_api %}, 'api'{% endif %}
+    {%- if cookiecutter.has_web %}, 'web'{% endif %}],
+))
+
+root = os.path.dirname(__file__)
+puppets = [x for x in os.listdir(root) if os.path.isfile('%s/env.py' % x)]
+modules = dict((x, import_file('%s/env.py' % x)) for x in puppets)
+
+env.stage = 'all'
+env.envs = dict((x, y.env) for x, y in modules.iteritems())

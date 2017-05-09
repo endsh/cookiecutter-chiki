@@ -12,6 +12,7 @@ dist
 !media/web/dist
 env
 logs
+data/fonts
 data/export
 data/uploads
 docs/.build
@@ -19,4 +20,6 @@ docs/_build
 tests/__pycache__
 node_modules
 bower_components
-werobot_session
+werobot_session*
+data/test
+cert*
