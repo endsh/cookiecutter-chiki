@@ -62,3 +62,4 @@ pycrypto==2.6.1
 gevent==1.2.0
 certifi==2015.04.28
 tldextract==2.0.2
+setuptools==35.0.1
