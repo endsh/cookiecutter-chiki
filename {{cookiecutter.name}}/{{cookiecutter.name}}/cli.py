@@ -9,8 +9,14 @@ from {{ cookiecutter.name }}.config import BaseConfig, AdminConfig
 {%- if cookiecutter.has_api %}, APIConfig{% endif %}
 {%- if cookiecutter.has_web %}, WebConfig{% endif %}
 
-manager = Manager(create_admin)
-manager.add_command('admin', Server(port=AdminConfig.PORT))
+manager = Manager(create_manager)
+
+
+@manager.command
+def admin(debug=False, reloader=False, host='0.0.0.0', port=AdminConfig.PORT):
+    """ Run the web server. """
+    app = create_admin()
+    app.run(debug=debug, use_reloader=reloader, host=host, port=port)
 
 
 {% if cookiecutter.has_api -%}

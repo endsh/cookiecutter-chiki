@@ -3,6 +3,7 @@
 env = dict(
     branch='{{ cookiecutter.name }}-common',
     roledefs=dict(
+        repo=['root@hostname'],
         db=['root@hostname'],
         front=['root@hostname'],
         main=['hostname'],

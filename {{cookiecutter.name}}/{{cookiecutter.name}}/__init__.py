@@ -14,6 +14,12 @@ __author__ = 'User'
 __email__ = 'user@qq.com'
 
 
+def create_manager(pyfile=None):
+    return init_admin(admin.init, AdminConfig, pyfile=pyfile,
+                      template_folder=AdminConfig.TEMPLATE_FOLDER,
+                      manager=True)
+
+
 def create_admin(pyfile=None):
     return init_admin(admin.init, AdminConfig, pyfile=pyfile,
                       template_folder=AdminConfig.TEMPLATE_FOLDER)
