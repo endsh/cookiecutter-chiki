@@ -2,7 +2,7 @@
 import inspect
 from chiki.service import run as run_service
 from flask.ext.script import Manager, Server
-from {{ cookiecutter.name }} import create_admin
+from {{ cookiecutter.name }} import create_manager, create_admin
 {%- if cookiecutter.has_api %}, create_api{% endif %}
 {%- if cookiecutter.has_web %}, create_web{% endif %}
 from {{ cookiecutter.name }}.config import BaseConfig, AdminConfig
