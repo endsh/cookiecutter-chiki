@@ -29,6 +29,7 @@ class IndexView(AdminIndexView):
     )
 
 
+@register_admin(config=AdminConfig)
 def init(app):
     """ 初始化后台管理 """
     admin = Admin(
@@ -36,10 +37,12 @@ def init(app):
         index_view=IndexView('仪表盘', menu_icon_value='diamond'),
         base_template='base.html',
     )
-    admin.add_view(WebStaticAdmin(
-        WebConfig.RELEASE_STATIC_FOLDER,
-        'http://{{ cookiecutter.web_host }}/static/',
-        name='文件', menu_icon_value='folder'))
+    
+    if os.path.isdir(app.config.get('RELEASE_STATIC_FOLDER')):
+        admin.add_view(WebStaticAdmin(
+            app.config.get('RELEASE_STATIC_FOLDER'),
+            'http://www.simple.com/static/',
+            name='文件', menu_icon_value='folder'))
 
     admin.init_app(app)
     db.init_app(app)

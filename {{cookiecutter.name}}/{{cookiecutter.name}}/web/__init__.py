@@ -1,6 +1,6 @@
 # coding: utf-8
-from chiki import MediaManager, init_uploads
-from {{ cookiecutter.name }}.base import db, um, wapi
+from chiki import register_web, MediaManager, init_uploads
+from {{ cookiecutter.name }}.base import db, um, wapi, WebConfig
 
 media = MediaManager(
     css=['css/web.min.css'],
@@ -36,6 +36,7 @@ def init_um(app):
     um.init_web()
 
 
+@register_web(config=WebConfig)
 def init(app):
     db.init_app(app)
     media.init_app(app)

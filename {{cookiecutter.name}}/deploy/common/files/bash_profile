@@ -6,3 +6,18 @@ export {{ cookiecutter.name | upper }}_API="./etc/config/base.py|./etc/config/ap
 {%- if cookiecutter.has_web %}
 export {{ cookiecutter.name | upper }}_WEB="./etc/config/base.py|./etc/config/web.py"
 {%- endif %}
+
+alias admin-start="uwsgi --ini etc/admin.ini"
+alias admin-stop="uwsgi --stop run/admin.pid"
+alias admin-reload="uwsgi --reload run/admin.pid"
+
+alias web-start="uwsgi --ini etc/web.ini"
+alias web-stop="uwsgi --stop run/web.pid"
+alias web-reload="uwsgi --reload run/web.pid"
+
+alias uwsgi-start="admin-start && web-start"
+alias uwsgi-stop="admin-stop && web-stop"
+alias uwsgi-reload="admin-reload && web-reload"
+
+source /usr/local/bin/virtualenvwrapper.sh
+workon {{ cookiecutter.name }}
