@@ -1,4 +1,5 @@
 # coding: utf-8
+import os
 from chiki.base import db
 from chiki.cool import cm
 from chiki.contrib.users import um

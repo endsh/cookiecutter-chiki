@@ -1,8 +1,8 @@
 # coding: utf-8
-from chiki import init_uploads, statistics
+import os
+from chiki import register_admin, init_uploads, statistics
 from chiki.admin import Admin, AdminIndexView, get_static_admin
-from {{ cookiecutter.name }}.base import db, cm, um
-from {{ cookiecutter.name }}.config import BaseConfig, WebConfig
+from {{ cookiecutter.name }}.base import db, cm, um, BaseConfig, AdminConfig
 
 sync_models = []
 WebStaticAdmin = get_static_admin('WebStaticAdmin')
