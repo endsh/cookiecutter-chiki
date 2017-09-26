@@ -34,7 +34,7 @@ def main():
         delete(web)
     {% endif %}
 
-    os.system("mkdir -p deploy/files && echo \"deploy/files/id_rsa\" | ssh-keygen -t rsa -C \"438985635@qq.com\"")
+    os.system("mkdir -p deploy/common/files && echo \"deploy/files/id_rsa\" | ssh-keygen -t rsa -C \"438985635@qq.com\"")
 
 
 if __name__ == '__main__':
