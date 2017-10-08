@@ -45,7 +45,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.name }} = {{ cookiecutter.name }}.cli:main',
+            '{{ cookiecutter.name }} = chiki.cli:main',
         ]
     },
 )
